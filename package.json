@@ -1,0 +1,15 @@
+{
+  "name": "expensetrackerapi",
+  "version": "1.0.0",
+  "description": "Api for handling expense tracker APP requests",
+  "main": "server.js",
+  "scripts": {
+    "start": "npm start"
+  },
+  "author": "Kofi Akoto Asante",
+  "license": "ISC",
+  "dependencies": {
+    "mongoose": "^8.0.3",
+    "nodemon": "^3.0.2"
+  }
+}
