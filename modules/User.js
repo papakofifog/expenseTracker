@@ -39,7 +39,9 @@ const UserModel= mongose.model('user', UserSchema);
 async function createUser(user){
     try{
         let newUser= new UserModel(
-            ...user
+            {
+                ...user
+            }  
         )
         let isCreated=await newUser.save();
         return isCreated;
