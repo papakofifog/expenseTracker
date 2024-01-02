@@ -1,18 +1,23 @@
 const mongose= require('mongoose');
 
 const UserSchema= new mongose.Schema({
+    
     firstName:{
         type: String,
-        required: [true, "firstname is required"]
+        required: [true, "firstname is required"],
+        trim: true
     },
     lastName:{
         type: String,
-        required: [true, "lastname is required"]
+        required: [true, "lastname is required"],
+        trim: true
     },
     email: {
         type: String,
         required: [true, "email is required"],
-        validator: ['//', "Invalid email provided"]
+        unique: [true, "email already exists"],
+        validate: [/^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "Invalid email provided"],
+        trim: true
     },
     profilePicture:{
         name:String,
@@ -20,23 +25,25 @@ const UserSchema= new mongose.Schema({
     },
     username:{
         type: String,
-        required: [true, "username is required"]
+        required: [true, "username is required"],
+        unique: [true, "username already exists"],
+        trim: true
     },
     password: {
         type: String,
-        required: [true, "password is required"]
+        required: [true, "password is required"],
     },
     role:{
-        String,
-        enum:['admin','user'],
-        default: ['user']
+        type:String,
+        enum:['ADMIN','USER'],
+        default: ['USER']
     }
 
 });
 
 const UserModel= mongose.model('user', UserSchema);
 
-async function createUser(user){
+async function createUser(user,next){
     try{
         let newUser= new UserModel(
             {
@@ -46,26 +53,26 @@ async function createUser(user){
         let isCreated=await newUser.save();
         return isCreated;
     }catch(e){
-        console.error(e);
+        next(e);
     }
 }
 
-async function getOneUser(userId){
+async function getOneUser(userData){
     try{
-        let user= await UserModel.findOne({_id:userId});
+        let user= await UserModel.findOne({...userData}).select("firstname,lastname,username,email");
         return user;
     }catch(e){
-        console.error(e);
+        next(e);
     }
 }
 
 async function getAllUsers(){
     try{
-        let allUsers= await UserModel.find();
+        let allUsers= await UserModel.find().select("firstname,lastname,username,email");
         return allUsers;
 
     }catch(e){
-        console.error(e);
+        next(e);
     }
 }
 
@@ -74,7 +81,7 @@ async function updateUserProfile(user){
         let userIsUpdated= await UserModel.updateOne({_id:user.id}, {...user});
         return userIsUpdated;
     }catch(e){
-        console.error(e);
+        next(e);
     }
 }
 
@@ -83,7 +90,7 @@ async function deleteUser(){
         let userIsDeleted=  await UserModel.deleteOne({_id:user.id});
         return userIsDeleted;
     }catch(e){
-        console.error(e);
+        next(e);
     }
 }
 

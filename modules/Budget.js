@@ -30,6 +30,13 @@ const BudgetSchema= new mongoose.Schema({
         enum: ['Single', 'Shared'],
         default: ['Single']
     },
+    badgetCategory:[
+        {
+            type: mongoose.Types.ObjectId,
+            ref: 'category',
+            required: true
+        }
+    ],
     defaultCurrency:{
         type:String,
         default: "GHS",
@@ -62,7 +69,7 @@ const BudgetSchema= new mongoose.Schema({
 
 },{timestamps:true});
 
-const budgetModel= mongoose.model('Budget', BudgetSchema);
+const budgetModel= mongoose.model('budget', BudgetSchema);
 
 async function createBudget(budget){
     try{    
